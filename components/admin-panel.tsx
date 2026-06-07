@@ -46,6 +46,12 @@ interface NewEventForm {
   countdownDate: string
   dateLabel: string
   dateSubtitle: string
+  // Weekend-event specific fields
+  dayLabel: string
+  venue: string
+  ageRestriction: string
+  ageNote: string
+  buttonText: string
 }
 
 // Helper to convert file to base64
@@ -98,7 +104,12 @@ export default function AdminPanel({ onNavigate, onLogout }: AdminPanelProps) {
     category: "weekend",
     countdownDate: "",
     dateLabel: "",
-    dateSubtitle: ""
+    dateSubtitle: "",
+    dayLabel: "",
+    venue: "",
+    ageRestriction: "",
+    ageNote: "",
+    buttonText: ""
   })
   const [isUploading, setIsUploading] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
@@ -181,7 +192,12 @@ export default function AdminPanel({ onNavigate, onLogout }: AdminPanelProps) {
       ticketPrice: newEventForm.ticketPrice,
       vipPrice: newEventForm.vipPrice,
       vipNote: newEventForm.vipNote,
-      stage: newEventForm.stage
+      stage: newEventForm.stage,
+      dayLabel: newEventForm.dayLabel.toUpperCase(),
+      venue: newEventForm.venue.toUpperCase(),
+      ageRestriction: newEventForm.ageRestriction,
+      ageNote: newEventForm.ageNote.toUpperCase(),
+      buttonText: (newEventForm.buttonText || "COMPRAR").toUpperCase()
     }
     
     addEvent(newEvent)
@@ -201,7 +217,12 @@ export default function AdminPanel({ onNavigate, onLogout }: AdminPanelProps) {
       category: "weekend",
       countdownDate: "",
       dateLabel: "",
-      dateSubtitle: ""
+      dateSubtitle: "",
+      dayLabel: "",
+      venue: "",
+      ageRestriction: "",
+      ageNote: "",
+      buttonText: ""
     })
     setShowNewEventModal(false)
   }
@@ -223,7 +244,12 @@ export default function AdminPanel({ onNavigate, onLogout }: AdminPanelProps) {
       category: event.category,
       countdownDate: event.countdownDate || "",
       dateLabel: event.dateLabel || "",
-      dateSubtitle: event.dateSubtitle || ""
+      dateSubtitle: event.dateSubtitle || "",
+      dayLabel: event.dayLabel || "",
+      venue: event.venue || "",
+      ageRestriction: event.ageRestriction || "",
+      ageNote: event.ageNote || "",
+      buttonText: event.buttonText || ""
     })
     setShowNewEventModal(true)
   }
@@ -246,6 +272,11 @@ export default function AdminPanel({ onNavigate, onLogout }: AdminPanelProps) {
       countdownDate: newEventForm.countdownDate,
       dateLabel: newEventForm.dateLabel,
       dateSubtitle: newEventForm.dateSubtitle,
+      dayLabel: newEventForm.dayLabel.toUpperCase(),
+      venue: newEventForm.venue.toUpperCase(),
+      ageRestriction: newEventForm.ageRestriction,
+      ageNote: newEventForm.ageNote.toUpperCase(),
+      buttonText: (newEventForm.buttonText || "COMPRAR").toUpperCase(),
       // Solo actualizar imagen si es weekend event
       image: editingEvent.category === "weekend" ? (newEventForm.image || editingEvent.image) : editingEvent.image
     }
@@ -272,7 +303,12 @@ export default function AdminPanel({ onNavigate, onLogout }: AdminPanelProps) {
       category: "weekend",
       countdownDate: "",
       dateLabel: "",
-      dateSubtitle: ""
+      dateSubtitle: "",
+      dayLabel: "",
+      venue: "",
+      ageRestriction: "",
+      ageNote: "",
+      buttonText: ""
     })
     setShowNewEventModal(false)
   }
@@ -304,7 +340,12 @@ export default function AdminPanel({ onNavigate, onLogout }: AdminPanelProps) {
       category: "weekend",
       countdownDate: "",
       dateLabel: "",
-      dateSubtitle: ""
+      dateSubtitle: "",
+      dayLabel: "",
+      venue: "",
+      ageRestriction: "",
+      ageNote: "",
+      buttonText: ""
     })
   }
 
@@ -1011,11 +1052,91 @@ export default function AdminPanel({ onNavigate, onLogout }: AdminPanelProps) {
                 <textarea
                   value={newEventForm.description}
                   onChange={(e) => handleNewEventChange("description", e.target.value)}
-                  placeholder="Describe el evento..."
+                  placeholder={editingEvent?.category === "weekend" ? "Una línea por renglón. Ej:\nLA EXPERIENCIA\nQUE NUNCA OLVIDAS" : "Describe el evento..."}
                   rows={3}
                   className="w-full bg-white/5 border border-white/20 rounded-lg py-2.5 sm:py-3 px-3 sm:px-4 text-white text-xs sm:text-sm placeholder:text-white/30 focus:outline-none focus:border-green-500/50 resize-none"
                 />
+                {editingEvent?.category === "weekend" && (
+                  <p className="text-white/40 text-[9px] sm:text-[10px] mt-1.5">Cada línea se muestra como un renglón separado en la tarjeta.</p>
+                )}
               </div>
+
+              {/* Weekend Event display fields - Solo para Weekend Events */}
+              {editingEvent?.category === "weekend" && (
+                <div className="p-3 sm:p-4 bg-green-500/5 border border-green-500/20 rounded-lg space-y-3 sm:space-y-4">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-green-500" />
+                    <label className="text-green-500 text-[10px] sm:text-xs tracking-[0.15em] font-medium">DATOS DE LA TARJETA WEEKEND</label>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                    <div>
+                      <label className="block text-white/50 text-[9px] sm:text-[10px] tracking-[0.15em] mb-2">DIA (ETIQUETA)</label>
+                      <input
+                        type="text"
+                        value={newEventForm.dayLabel}
+                        onChange={(e) => handleNewEventChange("dayLabel", e.target.value)}
+                        placeholder="Ej: VIERNES"
+                        className="w-full bg-white/5 border border-green-500/30 rounded-lg py-2.5 sm:py-3 px-3 sm:px-4 text-white text-xs sm:text-sm placeholder:text-white/30 focus:outline-none focus:border-green-500/50"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-white/50 text-[9px] sm:text-[10px] tracking-[0.15em] mb-2">LUGAR (VENUE)</label>
+                      <input
+                        type="text"
+                        value={newEventForm.venue}
+                        onChange={(e) => handleNewEventChange("venue", e.target.value)}
+                        placeholder="Ej: DISCOLO NIGHT CLUB"
+                        className="w-full bg-white/5 border border-green-500/30 rounded-lg py-2.5 sm:py-3 px-3 sm:px-4 text-white text-xs sm:text-sm placeholder:text-white/30 focus:outline-none focus:border-green-500/50"
+                      />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                    <div>
+                      <label className="block text-white/50 text-[9px] sm:text-[10px] tracking-[0.15em] mb-2">HORA</label>
+                      <input
+                        type="text"
+                        value={newEventForm.time}
+                        onChange={(e) => handleNewEventChange("time", e.target.value)}
+                        placeholder="Ej: 9:00 PM"
+                        className="w-full bg-white/5 border border-green-500/30 rounded-lg py-2.5 sm:py-3 px-3 sm:px-4 text-white text-xs sm:text-sm placeholder:text-white/30 focus:outline-none focus:border-green-500/50"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-white/50 text-[9px] sm:text-[10px] tracking-[0.15em] mb-2">RESTRICCION EDAD</label>
+                      <input
+                        type="text"
+                        value={newEventForm.ageRestriction}
+                        onChange={(e) => handleNewEventChange("ageRestriction", e.target.value)}
+                        placeholder="Ej: +14"
+                        className="w-full bg-white/5 border border-green-500/30 rounded-lg py-2.5 sm:py-3 px-3 sm:px-4 text-white text-xs sm:text-sm placeholder:text-white/30 focus:outline-none focus:border-green-500/50"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-white/50 text-[9px] sm:text-[10px] tracking-[0.15em] mb-2">TEXTO DEL BOTON</label>
+                      <input
+                        type="text"
+                        value={newEventForm.buttonText}
+                        onChange={(e) => handleNewEventChange("buttonText", e.target.value)}
+                        placeholder="Ej: COMPRAR"
+                        className="w-full bg-white/5 border border-green-500/30 rounded-lg py-2.5 sm:py-3 px-3 sm:px-4 text-white text-xs sm:text-sm placeholder:text-white/30 focus:outline-none focus:border-green-500/50"
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-white/50 text-[9px] sm:text-[10px] tracking-[0.15em] mb-2">NOTA DE EDAD</label>
+                    <input
+                      type="text"
+                      value={newEventForm.ageNote}
+                      onChange={(e) => handleNewEventChange("ageNote", e.target.value)}
+                      placeholder="Ej: MÁS SALVAJE. +14 SIN ALCOHOL"
+                      className="w-full bg-white/5 border border-green-500/30 rounded-lg py-2.5 sm:py-3 px-3 sm:px-4 text-white text-xs sm:text-sm placeholder:text-white/30 focus:outline-none focus:border-green-500/50"
+                    />
+                  </div>
+                  <p className="text-white/40 text-[9px] sm:text-[10px]">
+                    Estos campos se muestran en la tarjeta de la seccion WEEKEND EVENTS de la web.
+                  </p>
+                </div>
+              )}
 
               {/* Date, Time & Location */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">

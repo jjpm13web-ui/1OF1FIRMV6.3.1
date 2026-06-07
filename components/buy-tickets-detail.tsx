@@ -64,70 +64,28 @@ export default function BuyTicketsDetail({ onNavigate }: BuyTicketsDetailProps) 
   const goToPrevious = () => setCurrentMediaIndex((prev) => (prev === 0 ? galleryMedia.length - 1 : prev - 1))
   const goToNext = () => setCurrentMediaIndex((prev) => (prev === galleryMedia.length - 1 ? 0 : prev + 1))
 
-  const weekendEvents: WeekendEvent[] = [
-    {
-      id: "animal-night",
-      dayLabel: "VIERNES",
-      dayLabelColor: "bg-amber-500",
-      title: "ELITE WEEKEND",
-      subtitle: "Night",
-      subtitleStyle: "script",
-      description: ["LA EXPERIENCIA", "QUE NUNCA OLVIDAS"],
-      time: "9:00 PM",
-      date: "VIERNES 16 DE MAYO",
-      venue: "DISCOLO NIGHT CLUB",
-      location: "BARRANQUILLA",
-      ageRestriction: "+14",
-      ageNote: "MÁS SALVAJE. +14 SIN ALCOHOL",
-      buttonText: "COMPRAR",
-      buttonStyle: "outline",
-      image: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=600&q=80"
-    },
-    {
-      id: "animal-vip",
-      dayLabel: "SÁBADO",
-      dayLabelColor: "bg-amber-600",
-      title: "SECRET PARTY",
-      subtitle: "VIP",
-      subtitleStyle: "italic",
-      description: ["VIVE EL FIN DE SEMANA", "COMO NUNCA"],
-      time: "9:00 PM",
-      date: "SÁBADO 17 DE MAYO",
-      venue: "DISCOLO NIGHT CLUB",
-      location: "BARRANQUILLA",
-      ageRestriction: "+14",
-      ageNote: "MÁS SALVAJE. +14 SIN ALCOHOL",
-      buttonText: "COMPRAR",
-      buttonStyle: "outline",
-      image: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=600&q=80"
-    },
-    {
-      id: "animal-aftermovie",
-      dayLabel: "DOMINGO",
-      dayLabelColor: "bg-amber-700",
-      title: "ANIMAL",
-      subtitle: "Aftermovie",
-      subtitleStyle: "script",
-      description: ["REVIVE LA EXPERIENCIA", "COMO SI ESTUVIERAS AHÍ"],
-      time: "8:00 PM",
-      date: "DOMINGO 18 DE MAYO",
-      venue: "DISCOLO NIGHT CLUB",
-      location: "BARRANQUILLA",
-      ageRestriction: "+14",
-      ageNote: "MÁS SALVAJE. +14 SIN ALCOHOL",
-      buttonText: "COMPRAR",
-      buttonStyle: "filled",
-      image: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80"
-    }
-  ]
-
-  // Keep the web WEEKEND EVENTS section in sync with the admin panel: only render a
-  // presentation card when there is a matching event in the store (by position).
-  // When an event is deleted in the admin panel, the store shrinks and the extra
-  // card disappears from the web.
-  const displayedWeekendEvents = weekendEventsData
-    .map((_, index) => weekendEvents[index])
-    .filter((event): event is WeekendEvent => Boolean(event))
+  // The public WEEKEND EVENTS cards are fully driven by the store, so anything
+  // edited in the admin panel (WEEKEND EVENTS) is reflected here. Each store event
+  // is mapped to the presentation shape the card expects.
+  const dayLabelColors = ["bg-amber-500", "bg-amber-600", "bg-amber-700"]
+  const displayedWeekendEvents: WeekendEvent[] = weekendEventsData.map((event, index) => ({
+    id: event.id,
+    dayLabel: event.dayLabel || "",
+    dayLabelColor: dayLabelColors[index % dayLabelColors.length],
+    title: event.name,
+    subtitle: event.subtitle,
+    subtitleStyle: "script",
+    description: (event.description || "").split("\n").filter(Boolean),
+    time: event.time || "",
+    date: event.date || "",
+    venue: event.venue || "",
+    location: event.location || "",
+    ageRestriction: event.ageRestriction || "",
+    ageNote: event.ageNote || "",
+    buttonText: event.buttonText || "COMPRAR",
+    buttonStyle: index === weekendEventsData.length - 1 ? "filled" : "outline",
+    image: event.image,
+  }))
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -219,7 +177,7 @@ export default function BuyTicketsDetail({ onNavigate }: BuyTicketsDetailProps) 
                   <span className={`${event.dayLabelColor} text-black text-[8px] sm:text-[10px] md:text-xs font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded tracking-wider`}>
                     {event.dayLabel}
                   </span>
-                  {event.id === "animal-aftermovie" && (
+                  {index === displayedWeekendEvents.length - 1 && (
                     <span className="ml-1 sm:ml-2 bg-amber-700 text-black text-[8px] sm:text-[10px] md:text-xs font-bold px-1.5 sm:px-2 py-0.5 sm:py-1 rounded tracking-wider">
                       AFTERMOVIE
                     </span>
@@ -229,7 +187,7 @@ export default function BuyTicketsDetail({ onNavigate }: BuyTicketsDetailProps) 
                 {/* Title */}
                 <div className="mb-2 sm:mb-3">
                   <h2 className="text-sm sm:text-base md:text-4xl font-bold tracking-wider text-white">
-                    ELITE WEEKEND
+                    {event.title}
                   </h2>
                   <span className={`text-xs sm:text-sm md:text-3xl ${event.subtitleStyle === "script" ? "font-serif italic" : "italic font-light"} text-amber-500`}>
                     {event.subtitle}
