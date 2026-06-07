@@ -10,7 +10,6 @@ import {
   Headphones,
   LogOut,
   Check,
-  HelpCircle,
   Plus,
   X,
   Upload,
@@ -126,7 +125,7 @@ export default function AdminPanel({ onNavigate, onLogout }: AdminPanelProps) {
   const [isMediaUploading, setIsMediaUploading] = useState(false)
   const [mediaUploadError, setMediaUploadError] = useState<string | null>(null)
 
-  const allEvents = [...signatureEvents, ...weekendEvents, { id: "other", name: "OTHER EVENT", subtitle: "TELL US MORE", image: "", category: "weekend" as const, isEditable: false }]
+  const allEvents = [...signatureEvents, ...weekendEvents]
   const selectedEventData = allEvents.find(e => e.id === selectedEvent)
 
   const handleNewEventChange = (field: keyof NewEventForm, value: string) => {
@@ -577,31 +576,6 @@ export default function AdminPanel({ onNavigate, onLogout }: AdminPanelProps) {
                     )}
                   </div>
                 ))}
-
-                {/* Other Event */}
-                <button
-                  onClick={() => setSelectedEvent("other")}
-                  className={`w-full flex items-center gap-2 sm:gap-3 p-2 sm:p-3 rounded-lg border transition-all duration-300 ${
-                    selectedEvent === "other" 
-                      ? "border-white/30 bg-white/5" 
-                      : "border-white/10 hover:border-white/20 bg-white/5"
-                  }`}
-                >
-                  <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-lg overflow-hidden bg-white/10 flex-shrink-0 flex items-center justify-center">
-                    <HelpCircle className="w-4 h-4 sm:w-6 sm:h-6 text-white/40" />
-                  </div>
-                  <div className="flex-1 text-left min-w-0">
-                    <p className="text-white text-xs sm:text-sm tracking-wide">OTHER EVENT</p>
-                    <p className="text-white/50 text-[9px] sm:text-[10px] tracking-[0.1em]">TELL US MORE</p>
-                  </div>
-                  {selectedEvent === "other" ? (
-                    <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white/30 flex items-center justify-center flex-shrink-0">
-                      <Check className="w-3 h-3 sm:w-4 sm:h-4 text-black" />
-                    </div>
-                  ) : (
-                    <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 text-white/30 flex-shrink-0" />
-                  )}
-                </button>
               </div>
             </div>
           </div>
@@ -730,7 +704,6 @@ export default function AdminPanel({ onNavigate, onLogout }: AdminPanelProps) {
                           <option key={event.id} value={event.id} className="bg-black text-white">{event.name}</option>
                         ))}
                       </optgroup>
-                      <option value="other" className="bg-black text-white">OTHER EVENT</option>
                     </select>
                     <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 sm:w-4 sm:h-4 text-white/40 pointer-events-none" />
                   </div>
