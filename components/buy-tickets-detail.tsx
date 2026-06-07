@@ -121,6 +121,14 @@ export default function BuyTicketsDetail({ onNavigate }: BuyTicketsDetailProps) 
     }
   ]
 
+  // Keep the web WEEKEND EVENTS section in sync with the admin panel: only render a
+  // presentation card when there is a matching event in the store (by position).
+  // When an event is deleted in the admin panel, the store shrinks and the extra
+  // card disappears from the web.
+  const displayedWeekendEvents = weekendEventsData
+    .map((_, index) => weekendEvents[index])
+    .filter((event): event is WeekendEvent => Boolean(event))
+
   return (
     <div className="min-h-screen bg-black text-white">
       {/* Header */}
@@ -196,7 +204,7 @@ export default function BuyTicketsDetail({ onNavigate }: BuyTicketsDetailProps) 
 
       {/* Event Cards */}
       <main className="px-2 sm:px-3 md:px-8 pb-6 sm:pb-8 space-y-3 sm:space-y-4">
-        {weekendEvents.map((event, index) => {
+        {displayedWeekendEvents.map((event, index) => {
           const cardSoldOut = getSoldOut(index)
           return (
           <div
