@@ -1291,7 +1291,7 @@ export default function AdminPanel({ onNavigate, onLogout }: AdminPanelProps) {
                           Haz clic para subir {newMediaType === "image" ? "imagen" : "video"}
                         </span>
                         <span className="text-white/30 text-[8px] sm:text-[9px]">
-                          {newMediaType === "image" ? "PNG, JPG hasta 10MB" : "MP4, WebM hasta 50MB"}
+                          {newMediaType === "image" ? "PNG, JPG hasta 50MB" : "MP4, WebM hasta 1GB"}
                         </span>
                       </>
                     )}
