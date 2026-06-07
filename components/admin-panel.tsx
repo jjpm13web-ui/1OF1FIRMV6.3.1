@@ -144,9 +144,9 @@ export default function AdminPanel({ onNavigate, onLogout }: AdminPanelProps) {
       return
     }
 
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      setUploadError("La imagen debe ser menor a 5MB")
+    // Validate file size (max 50MB)
+    if (file.size > 50 * 1024 * 1024) {
+      setUploadError("La imagen debe ser menor a 50MB")
       return
     }
 
@@ -323,10 +323,10 @@ export default function AdminPanel({ onNavigate, onLogout }: AdminPanelProps) {
       return
     }
 
-    // Validate file size (max 10MB for images, 50MB for videos)
-    const maxSize = newMediaType === "image" ? 10 * 1024 * 1024 : 50 * 1024 * 1024
+    // Validate file size (max 50MB for images, 1GB for videos)
+    const maxSize = newMediaType === "image" ? 50 * 1024 * 1024 : 1024 * 1024 * 1024
     if (file.size > maxSize) {
-      setMediaUploadError(`El archivo debe ser menor a ${newMediaType === "image" ? "10MB" : "50MB"}`)
+      setMediaUploadError(`El archivo debe ser menor a ${newMediaType === "image" ? "50MB" : "1GB"}`)
       return
     }
 
@@ -945,7 +945,7 @@ export default function AdminPanel({ onNavigate, onLogout }: AdminPanelProps) {
                               <span className="text-white/40 text-[10px] sm:text-xs text-center px-2">
                                 Haz clic para subir imagen
                               </span>
-                              <span className="text-white/30 text-[8px] sm:text-[9px]">PNG, JPG hasta 5MB</span>
+                              <span className="text-white/30 text-[8px] sm:text-[9px]">PNG, JPG hasta 50MB</span>
                             </>
                           )}
                         </label>
